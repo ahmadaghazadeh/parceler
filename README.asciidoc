@@ -259,6 +259,30 @@ And to deserialize:
 AutoValueParcel autoValueParcel = Parcels.unwrap(wrappedAutoValue);
 ----
 
+==== Wrap / Unwrap Callbacks
+Pre and post-processing is common when dealing with serialization marshalling.
+To support this, Parceler uses callbacks to handle these cases.
+A method annotated on a Parceler bean annotated with `@OnWrap` or `@OnUnwrap` will trigger both of these cases respecitively.
+
+[source,java]
+----
+@Parcel
+public class CallbackExample {
+
+    @OnWrap
+    public void wrap() { /*...*/ }
+
+    @OnUnwrap
+    public void unwrap() { /*...*/ }
+}
+
+CallbackExample example = new CallbackExample();
+
+Parcelable parcelable = Parcels.wrap(example); // CallbackExample.wrap() is called before marshalling.
+//...
+CallbackExample example = Parcels.unwrap(parcelable); // CallbackExample.unwrap() is called after unmarshalling.
+----
+
 ==== Custom serialization
 `@Parcel` includes an optional parameter to include a manual serializer `ParcelConverter` for the case where special serialization is necessary.
 This provides a still cleaner option for using Parcelable classes than implementing them by hand.
